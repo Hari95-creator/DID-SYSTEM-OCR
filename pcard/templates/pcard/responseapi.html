@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+{% extends 'pcard/base.html' %}
+{% block content%}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>verify</title>
+</head>
+<style>
+
+img {
+  border-radius: 8px;
+}
+</style>
+<body>
+<section class="team" id="team">
+
+    <div class="container" data-aos="fade-up">
+
+        <header class="section-header">
+            <br>
+            <h2>API RESPONSE</h2>
+            <p>DETAILS FROM PANCARD API</p>
+        </header>
+
+        <div align-items-stretchclass="col-lg-8 entries>
+
+                    <div class=" col-lg-3 col-md-6 d-flex
+        " data-aos="fade-up" data-aos-delay="100" >
+        <div class="member">
+            <div class="">
+                <img alt="Person" alt="" class="img-fluid" src="/media/Face1.jpg">
+            </div>
+            <div class="member-info">
+
+
+                {% for response in alldata %}
+
+
+                <h4> {{ response.pname}} </h4>
+
+                <p><b> Father Name : {{ response.fname}} </b></p>
+
+                <p><b> Date of Birth : {{ response.dob}} </b></p>
+
+                <p><b> Gender: {{ response.gender}} </b></p>
+
+                <p><b> PAN NO: {{ response.uid}} </b></p>
+
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+</body>
+
+</html>
+{% endblock %}
+
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Title</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--&lt;!&ndash;{% if alldata %}&ndash;&gt;-->
+
+<!--&lt;!&ndash;    <h2><b> {{ alldata }} </b></h2></p></pre>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;{% endif %}&ndash;&gt;-->
+
+<!--{% for response in alldata %}-->
+<!--     <h2><b> Name: {{ response.pname }} </b></h2></p></pre><br>-->
+
+<!--        <h2><b> Father's Name: {{ response.fname }} </b></h2></p></pre><br>-->
+
+<!--        <h2><b> Date of Birth : {{ response.dob}} </b></h2></p></pre><br>-->
+
+<!--        <h2><b> Gender: {{ response.gender}} </b></h2></p></pre><br>-->
+
+<!--         <h2><b> Pan No : {{ response.uid}} </b></h2></p></pre><br>-->
+
+<!--{% endfor %}-->
+<!--</body>-->
+<!--</html>-->

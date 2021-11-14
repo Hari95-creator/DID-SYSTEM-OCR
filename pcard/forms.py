@@ -4,24 +4,18 @@ from .models import FileUploadModel
 
 
 class UploadImageForm(forms.Form):
-  #title = forms.CharField(max_length=50)
-  #file = forms.FileField()
-  image = forms.ImageField()
+    # title = forms.CharField(max_length=50)
+    # file = forms.FileField()
+    image = forms.ImageField()
 
 
 class ImageUploadForm(forms.ModelForm):
-  class Meta:
-    model = ImageUploadModel
-    fields = ('image', )
-
-
-
+    class Meta:
+        model = ImageUploadModel
+        fields = ('image',)
 
 
 class UploadFileForm(forms.ModelForm):
-  class Meta:
-    model = FileUploadModel
-    fields = ('file', 'select_bank')
-    
-
-    
+    class Meta:
+        model = FileUploadModel
+        fields = ('file', 'select_bank')

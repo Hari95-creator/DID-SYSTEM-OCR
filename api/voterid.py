@@ -7,63 +7,64 @@ except ImportError:
 import pytesseract
 import numpy as np
 import cv2
-#import ftfy
+# import ftfy
 import re
-#import json
-#import io
-#import os
+
+# import json
+# import io
+# import os
 
 face_classifier = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")
-                                        
-#filename = cv2.imread("/home/arijitsen/PAN-Card-OCR-master/media")
+
+
+# filename = cv2.imread("/home/arijitsen/PAN-Card-OCR-master/media")
 
 def Convert(a):
     it = iter(a)
     res_dct = dict(zip(it, it))
     return res_dct
 
-def voterid(filename):  
+
+def voterid(filename):
     """
     This function will handle the core OCR processing of images.
     """
-    
+
     i = cv2.imread(filename)
-    
+
     # Convert to gray
     i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
     i = cv2.adaptiveThreshold(i, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 85, 11)
     # Apply dilation and erosion to remove some noise
-    kernel = np.ones((5,5), np.uint8)
+    kernel = np.ones((5, 5), np.uint8)
     i = cv2.dilate(i, kernel, iterations=1)
     i = cv2.erode(i, kernel, iterations=1)
-    
+
     text = pytesseract.image_to_string(i)
-    #return text
+    # return text
     # Arijit Code Added
     dict = text.split(' ')
-            
-    
-    #print(dict, "XXX") 
-    #print('Pan card number is {}.\nDate of Birth is {}.'.format(val[0][0],val[1][0]))
-    #print('\n')
+
+    # print(dict, "XXX")
+    # print('Pan card number is {}.\nDate of Birth is {}.'.format(val[0][0],val[1][0]))
+    # print('\n')
     # Cleaning all the gibberish text
-    #text = ftfy.fix_text(text)
-    #text = ftfy.fix_encoding(text)
-    #new_text = ocr_to_json(text)
-    #face_detect(filename)
-    #print(type(new_text))
-    #list_text = new_text.split("\n")
-    #print(list_text)
+    # text = ftfy.fix_text(text)
+    # text = ftfy.fix_encoding(text)
+    # new_text = ocr_to_json(text)
+    # face_detect(filename)
+    # print(type(new_text))
+    # list_text = new_text.split("\n")
+    # print(list_text)
 
     new_text = get_name(text)
-    #face_detect(filename)
-    file = open("../TextExtract.txt","w") 
+    # face_detect(filename)
+    file = open("../TextExtract.txt", "w")
     file.write(text)
     file.close()
 
     # new_text = text_process()
     return new_text
-
 
 
 def get_name(text):
@@ -119,6 +120,7 @@ def get_name(text):
     data = {}
     data['Name'] = name
     data['Father Name'] = fname
+
     ##
     def findword(textlist, wordstring):
         lineno = -1
@@ -126,7 +128,7 @@ def get_name(text):
             xx = wordline.split()
             if ([w for w in xx if re.search(wordstring, w)]):
                 lineno = textlist.index(wordline)
-                textlist = textlist[lineno+1:]
+                textlist = textlist[lineno + 1:]
                 return textlist
         return textlist
 
@@ -134,43 +136,38 @@ def get_name(text):
     voter_no = findword(text1, '(ELECTION COMMISSION OF INDIA | ELECTOR PHOTO IDENTITY CARD|CARD|IDENTITY CARD)$')
     voter_no = voter_no[0]
     epic_no = voter_no.replace(" ", "")
-    #print('\n')
-    #print('Epic No:',epic_no)
+    # print('\n')
+    # print('Epic No:',epic_no)
     ##print(str(d).replace("{","").replace("}", ""))
     result = {
         "Name": data['Name'],
         "Father's Name": data['Father Name']
     }
-    return result #(str(data).replace("{","").replace("}", ""))
-
+    return result  # (str(data).replace("{","").replace("}", ""))
 
 
 def face_detect(filename):
-    img=cv2.imread(filename)
+    img = cv2.imread(filename)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    #cv2.imshow('Original image', img)
+    # cv2.imshow('Original image', img)
 
     faces = face_classifier.detectMultiScale(gray, 1.3, 5)
-
 
     """if faces is ():
         print("No faces found")"""
 
-
     for (x, y, w, h) in faces:
-        x = x - 25 
-        y = y - 40 
+        x = x - 25
+        y = y - 40
         cv2.rectangle(img, (x, y), (x + w + 50, y + h + 70), (27, 200, 10), 2)
-        #cv2.imshow('Face Detection', img)
-        crop_img = img[y: y + h+70, x: x + w+50] 
-        cv2.imwrite('./media/Face2.jpg',crop_img)
-        
+        # cv2.imshow('Face Detection', img)
+        crop_img = img[y: y + h + 70, x: x + w + 50]
+        cv2.imwrite('./media/Face2.jpg', crop_img)
+
         cv2.waitKey(1000)
-    cv2.destroyAllWindows() 
+    cv2.destroyAllWindows()
     return crop_img
-
-
 
 
 """

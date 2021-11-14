@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% extends 'pcard/base.html' %}
+{% block content%}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>verify</title>
+</head>
+
+<style>
+
+img {
+  border-radius: 8px;
+}
+</style>
+<body>
+<section class="team" id="team">
+
+    <div class="container" data-aos="fade-up">
+
+        <header class="section-header">
+            <br>
+            <h2>API RESPONSE</h2>
+            <p>DETAILS FROM DRIVING LICENCE API</p>
+        </header>
+
+        <div align-items-stretchclass="col-lg-8 entries>
+
+                    <div class=" col-lg-3 col-md-6 d-flex
+        " data-aos="fade-up" data-aos-delay="100" >
+        <div class="member">
+            <!--            <div class="">-->
+            <!--                <img alt="Person" alt="" class="img-fluid" src="/media/Face1.jpg">-->
+            <!--            </div>-->
+            <div class="member-info">
+
+
+                {% for response in alldata %}
+
+
+                <p><b>Name: {{ response.licencename}}</b></p>
+
+                <p><b> Father Name : {{ response.fathername}} </b></p>
+
+                <p><b> Date of Birth : {{ response.dob}} </b></p>
+
+                <p><b> Licence No : {{ response.licenceno}} </b></p>
+
+                <p><b> Issue Date : {{ response.issuedate}} </b></p>
+
+                <p><b> Valid Date: {{ response.validate}} </b></p>
+
+                <p><b> Authority to Drive: {{response.authtodr}} </b></p>
+
+                    {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+</body>
+
+</html>
+{% endblock %}
+
+
+
+

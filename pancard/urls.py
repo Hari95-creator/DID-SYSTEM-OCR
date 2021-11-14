@@ -23,6 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'', include('pcard.urls')),
     url(r'', include('api.urls')),
-    #path('pcard/', include('pcard.urls')),
-    #url(r'^pancard/$', views.ocr_core, name='PanCard'),
+    # path('pcard/', include('pcard.urls')),
+    # url(r'^pancard/$', views.ocr_core, name='PanCard'),
 ]

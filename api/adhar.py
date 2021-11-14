@@ -8,26 +8,28 @@ import cv2
 import ftfy
 from PIL import Image
 
-#from scipy.ndimage import rotate
+# from scipy.ndimage import rotate
 import numpy as np
+
 face_classifier = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")
 
-def adhar(filename):  
+
+def adhar(filename):
     """
     This function will handle the core OCR processing of images.
     """
-    
+
     i = cv2.imread(filename)
-    newdata=pytesseract.image_to_osd(i)
+    newdata = pytesseract.image_to_osd(i)
     angle = re.search('(?<=Rotate: )\d+', newdata).group(0)
     angle = int(angle)
     i = Image.open(filename)
     if angle != 0:
-       #with Image.open("ro2.jpg") as i:
+        # with Image.open("ro2.jpg") as i:
         rot_angle = 360 - angle
         i = i.rotate(rot_angle, expand="True")
         i.save(filename)
-    
+
     i = cv2.imread(filename)
     # Convert to gray
     i = cv2.cvtColor(i, cv2.COLOR_BGR2GRAY)
@@ -36,24 +38,25 @@ def adhar(filename):
     kernel = np.ones((1, 1), np.uint8)
     i = cv2.dilate(i, kernel, iterations=1)
     i = cv2.erode(i, kernel, iterations=1)
-    
-    text = pytesseract.image_to_string(i)
-    #return text
-    # Arijit Code Added
-    
-    dict = text.split(' ')
-    #print(dict)         
 
-    #print('Pan card number is {}.\nDate of Birth is {}.'.format(val[0][0],val[1][0]))
-    #print('\n')
+    text = pytesseract.image_to_string(i)
+    # return text
+    # Arijit Code Added
+
+    dict = text.split(' ')
+    # print(dict)
+
+    # print('Pan card number is {}.\nDate of Birth is {}.'.format(val[0][0],val[1][0]))
+    # print('\n')
     # Cleaning all the gibberish text
     text = ftfy.fix_text(text)
     text = ftfy.fix_encoding(text)
-    
+
     new_text = clear_text(text)
-    #print(type(new_text))
-    #face_detect(filename)
+    # print(type(new_text))
+    # face_detect(filename)
     return new_text
+
 
 def clear_text(text):
     list_text = []
@@ -62,9 +65,9 @@ def clear_text(text):
     yob_patn = '[0-9]{4}'
     dob_patn = '\d+[-/]\d+[-/]\d+'
     adhar_number_patn = '[0-9]{4}\s[0-9]{4}\s[0-9]{4}'
-    adhar_name_patn = r'\b[A-Z][a-z]+\s[A-Z][a-z]+\s[A-Z][a-z]+$'    
-        
-        # adhar_name_pattrn = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
+    adhar_name_patn = r'\b[A-Z][a-z]+\s[A-Z][a-z]+\s[A-Z][a-z]+$'
+
+    # adhar_name_pattrn = r'\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b'
     name = 'NULL'
     for ele in split_ocr:
         match = re.search(adhar_name_patn, ele)
@@ -146,31 +149,27 @@ def clear_text(text):
     }
     return json_text
 
-    
-
 
 def face_detect(filename):
-
-    #print(filename, "XXX")
-    img=cv2.imread(filename)
+    # print(filename, "XXX")
+    img = cv2.imread(filename)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    #cv2.imshow('Original image', img)
+    # cv2.imshow('Original image', img)
 
     faces = face_classifier.detectMultiScale(gray, 1.3, 5)
-
 
     """if faces is ():
         print("No faces found")"""
 
     for (x, y, w, h) in faces:
-        x = x - 25 
-        y = y - 40 
+        x = x - 25
+        y = y - 40
         cv2.rectangle(img, (x, y), (x + w + 50, y + h + 70), (27, 200, 10), 2)
-        #cv2.imshow('Face Detection', img)
-        crop_img = img[y: y + h+70, x: x + w+50] 
-        cv2.imwrite('./media/Face1.jpg',crop_img)
-        
+        # cv2.imshow('Face Detection', img)
+        crop_img = img[y: y + h + 70, x: x + w + 50]
+        cv2.imwrite('./media/Face1.jpg', crop_img)
+
         cv2.waitKey(1000)
-    cv2.destroyAllWindows() 
+    cv2.destroyAllWindows()
     return crop_img

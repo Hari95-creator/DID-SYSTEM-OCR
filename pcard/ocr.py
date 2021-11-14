@@ -1,4 +1,4 @@
-#from django.conf import settings
+# from django.conf import settings
 
 """try:  
     from PIL import Image
@@ -12,35 +12,37 @@ import ftfy
 import re
 import json
 import io
-#import os
+# import os
 from PIL import Image
 
-#from scipy.ndimage import rotate
+# from scipy.ndimage import rotate
 face_classifier = cv2.CascadeClassifier("./haarcascade_frontalface_default.xml")
-                                        
-filename = cv2.imread("/home/arijit/Documents/PAN-Card-OCR-master/media")
+
+# filename = cv2.imread("/home/arijit/Documents/PAN-Card-OCR-master/media")
+
 
 def Convert(a):
     it = iter(a)
     res_dct = dict(zip(it, it))
     return res_dct
 
-def ocr(filename):  
+
+def ocr(filename):
     """
     This function will handle the core OCR processing of images.
     """
     i = cv2.imread(filename)
-    
-    newdata=pytesseract.image_to_osd(i)
+
+    newdata = pytesseract.image_to_osd(i)
     angle = re.search('(?<=Rotate: )\d+', newdata).group(0)
     angle = int(angle)
     i = Image.open(filename)
     if angle != 0:
-       #with Image.open("ro2.jpg") as i:
+        # with Image.open("ro2.jpg") as i:
         rot_angle = 360 - angle
         i = i.rotate(rot_angle, expand="True")
         i.save(filename)
-    
+
     """rot = False
     if rot:
         i = rotate(i, None)
@@ -56,30 +58,25 @@ def ocr(filename):
     i = cv2.erode(i, kernel, iterations=1)
 
     text = pytesseract.image_to_string(i)
-    #return text
+    # return text
     # Arijit Code Added
 
     dict = text.split(' ')
-    #print(dict)         
+    # print(dict)
 
-    #print('Pan card number is {}.\nDate of Birth is {}.'.format(val[0][0],val[1][0]))
-    #print('\n')
+    # print('Pan card number is {}.\nDate of Birth is {}.'.format(val[0][0],val[1][0]))
+    # print('\n')
     # Cleaning all the gibberish text
     text = ftfy.fix_text(text)
     text = ftfy.fix_encoding(text)
     new_text = ocr_to_json(text)
 
-    #print(type(new_text))
-    #list_text = new_text.split("\n")
-    #print(list_text)
+    # print(type(new_text))
+    # list_text = new_text.split("\n")
+    # print(list_text)
 
     face_detect(filename)
     return new_text
-
-     
-
-         
-
 
 
 def ocr_to_json(text):
@@ -99,7 +96,7 @@ def ocr_to_json(text):
     lines = text.split('\n')
     for lin in lines:
         s = lin.strip()
-        s = lin.replace('\n','')
+        s = lin.replace('\n', '')
         s = s.rstrip()
         s = s.lstrip()
         text1.append(s)
@@ -112,21 +109,24 @@ def ocr_to_json(text):
 
     for wordline in text1:
         xx = wordline.split('\n')
-        if ([w for w in xx if re.search('(INCOMETAXDEPARWENT @|mcommx|INCOME|TAX|GOW|GOVT|GOVERNMENT|OVERNMENT|VERNMENT|DEPARTMENT|EPARTMENT|PARTMENT|ARTMENT|INDIA|NDIA)$', w)]):
+        if ([w for w in xx if re.search(
+                '(INCOMETAXDEPARWENT @|mcommx|INCOME|TAX|GOW|GOVT|GOVERNMENT|OVERNMENT|VERNMENT|DEPARTMENT|EPARTMENT|PARTMENT|ARTMENT|INDIA|NDIA)$',
+                w)]):
             text1 = list(text1)
             lineno = text1.index(wordline)
             break
 
-    text0 = text1[lineno+1:]
-    #print(text0)  # Contains all the relevant extracted text in form of a list - uncomment to check
+    text0 = text1[lineno + 1:]
+
+    # print(text0)  # Contains all the relevant extracted text in form of a list - uncomment to check
 
     def findword(textlist, wordstring):
         lineno = -1
         for wordline in textlist:
-            xx = wordline.split( )
+            xx = wordline.split()
             if ([w for w in xx if re.search(wordstring, w)]):
                 lineno = textlist.index(wordline)
-                textlist = textlist[lineno+1:]
+                textlist = textlist[lineno + 1:]
                 return textlist
         return textlist
 
@@ -175,16 +175,15 @@ def ocr_to_json(text):
         pan = pan.replace("%", "L")
 
     except:
-        pass 
+        pass
 
-    # Making tuples of data
+        # Making tuples of data
     data = {}
     data['Name'] = name
     data['Father Name'] = fname
     data['Date of Birth'] = dob
     data['PAN'] = pan
 
-    
     # Writing data into JSON
     try:
         to_unicode = unicode
@@ -197,33 +196,35 @@ def ocr_to_json(text):
         outfile.write(to_unicode(str_))
 
     # Read JSON file
-    with open('data.json', encoding = 'utf-8') as data_file:
+    with open('data.json', encoding='utf-8') as data_file:
         data_loaded = json.load(data_file)
 
     # print(data == data_loaded)
 
     # Reading data back JSON(give correct path where JSON is stored)
-    with open('data.json', 'r', encoding= 'utf-8') as f:
+    with open('data.json', 'r', encoding='utf-8') as f:
         ndata = json.load(f)
-    
 
     t = (f"Name: {data['Name']}\n"
-     f"Father's Name: {data['Father Name']}\n"
-     f"Date of Birth: {data['Date of Birth']}\n"
-     f"PAN number: {data['PAN']}\n")
+         f"Father's Name: {data['Father Name']}\n"
+         f"Date of Birth: {data['Date of Birth']}\n"
+         f"PAN number: {data['PAN']}\n")
 
-    return t
-    # data=t
+    list_data = [data['Name'], data['Father Name'], data['Date of Birth'],data['PAN']]
+
+    return list_data
     # return Respone({"message":data})
-#print(ocr('images/ocr_example_1.png'))
+
+
+# print(ocr('images/ocr_example_1.png'))
 
 
 def face_detect(filename):
-    img=cv2.imread(filename)
-    
+    img = cv2.imread(filename)
+
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    #cv2.imshow('Original image', img)
+    # cv2.imshow('Original image', img)
 
     faces = face_classifier.detectMultiScale(gray, 1.3, 5)
 
@@ -231,15 +232,14 @@ def face_detect(filename):
     if faces is ():
         print("No faces found")"""
 
-    #crop_img = 0
+    # crop_img = 0
     for (x, y, w, h) in faces:
-
-        x = x - 25 
-        y = y - 40 
+        x = x - 25
+        y = y - 40
         cv2.rectangle(img, (x, y), (x + w + 50, y + h + 70), (27, 200, 10), 2)
-        #cv2.imshow('Face Detection', img)
-        crop_img = img[y: y + h+70, x: x + w+50] 
-        cv2.imwrite('./media/Face1.jpg',crop_img)
+        # cv2.imshow('Face Detection', img)
+        crop_img = img[y: y + h + 70, x: x + w + 50]
+        cv2.imwrite('./media/Face1.jpg', crop_img)
         cv2.waitKey(1000)
-    cv2.destroyAllWindows() 
+    cv2.destroyAllWindows()
     return crop_img
